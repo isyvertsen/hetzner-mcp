@@ -1,6 +1,6 @@
 # Hetzner Cloud MCP Server
 
-A secure, local [MCP](https://modelcontextprotocol.io/) server that gives Claude access to your Hetzner Cloud infrastructure. Your API token stays on your machine and is **never sent to Anthropic**.
+A secure, local [MCP](https://modelcontextprotocol.io/) server that gives your LLM access to your Hetzner Cloud infrastructure. Your API token stays on your machine and is **never sent to any LLM provider**.
 
 ## Features
 
@@ -27,10 +27,14 @@ Go to [Hetzner Cloud Console](https://console.hetzner.cloud/) → Security → A
 
 Use **Read** permissions for a read-only setup, or **Read & Write** if you want to create snapshots.
 
-### 3. Configure Claude Desktop
+### 3. Configure your editor
 
-Edit your Claude Desktop config:
+Add the MCP server to your editor's config. Replace `/path/to/hetzner-mcp` with the actual path where you cloned the repo.
 
+<details>
+<summary><strong>Claude Desktop</strong></summary>
+
+Edit your config file:
 - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
@@ -49,9 +53,127 @@ Edit your Claude Desktop config:
 }
 ```
 
-### 4. Restart Claude Desktop
+Restart Claude Desktop to load the server.
+</details>
 
-The Hetzner tools should now be available. Try asking Claude: *"Run a health check on my Hetzner servers"*.
+<details>
+<summary><strong>Claude Code (CLI)</strong></summary>
+
+Add globally with one command:
+
+```bash
+claude mcp add hetzner \
+  -s user \
+  -e HETZNER_API_TOKEN=your-token-here \
+  -- /path/to/hetzner-mcp/.venv/bin/python /path/to/hetzner-mcp/server.py
+```
+
+Or add manually to `~/.claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "hetzner": {
+      "command": "/path/to/hetzner-mcp/.venv/bin/python",
+      "args": ["/path/to/hetzner-mcp/server.py"],
+      "env": {
+        "HETZNER_API_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+For project-scoped setup, add to `.mcp.json` in the project root instead.
+</details>
+
+<details>
+<summary><strong>Cursor</strong></summary>
+
+Edit the config file:
+- **Global:** `~/.cursor/mcp.json`
+- **Project:** `.cursor/mcp.json` (in repo root)
+
+```json
+{
+  "mcpServers": {
+    "hetzner": {
+      "command": "/path/to/hetzner-mcp/.venv/bin/python",
+      "args": ["/path/to/hetzner-mcp/server.py"],
+      "env": {
+        "HETZNER_API_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+Or go to **Settings → MCP** in Cursor to add it via the UI.
+</details>
+
+<details>
+<summary><strong>VS Code (Copilot)</strong></summary>
+
+Add to your workspace at `.vscode/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "hetzner": {
+      "command": "/path/to/hetzner-mcp/.venv/bin/python",
+      "args": ["/path/to/hetzner-mcp/server.py"],
+      "env": {
+        "HETZNER_API_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+Or add to your user `settings.json`:
+
+```json
+{
+  "mcp.servers": {
+    "hetzner": {
+      "command": "/path/to/hetzner-mcp/.venv/bin/python",
+      "args": ["/path/to/hetzner-mcp/server.py"],
+      "env": {
+        "HETZNER_API_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+</details>
+
+<details>
+<summary><strong>Windsurf</strong></summary>
+
+Edit the config file:
+- **macOS:** `~/.codeium/windsurf/mcp_config.json`
+- **Windows:** `%USERPROFILE%\.codeium\windsurf\mcp_config.json`
+
+```json
+{
+  "mcpServers": {
+    "hetzner": {
+      "command": "/path/to/hetzner-mcp/.venv/bin/python",
+      "args": ["/path/to/hetzner-mcp/server.py"],
+      "env": {
+        "HETZNER_API_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+Or go to **Plugins → Manage plugins → View raw config**.
+</details>
+
+### 4. Try it out
+
+Restart your editor and try: *"Run a health check on my Hetzner servers"*.
 
 ## Available Tools
 
@@ -69,7 +191,7 @@ The Hetzner tools should now be available. Try asking Claude: *"Run a health che
 
 ## Security
 
-Your API token is stored in the local Claude Desktop config file — it is **never** included in conversations or sent to Anthropic's servers. The MCP server runs locally on your machine and communicates with Claude via stdio.
+Your API token is stored in your local editor config file — it is **never** included in conversations or sent to any LLM provider. The MCP server runs locally on your machine and communicates with your editor via stdio.
 
 For extra safety:
 
