@@ -1,0 +1,29 @@
+[project]
+name = "hetzner-mcp"
+version = "0.1.0"
+description = "Secure MCP server for Hetzner Cloud — lets Claude manage your servers without exposing API keys"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Ivar Werner", email = "ivar.syvertsen@gmail.com"},
+]
+keywords = ["mcp", "hetzner", "cloud", "claude", "anthropic"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "httpx>=0.27.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ivarwerner/hetzner-mcp"
+Issues = "https://github.com/ivarwerner/hetzner-mcp/issues"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
